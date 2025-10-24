@@ -1,4 +1,4 @@
-# YeoEunHyeok-web-project
+# 웹프로그래밍 ReadMe
 ## 1. 프로젝트 설명
 
 ## 2. 주요 기능
