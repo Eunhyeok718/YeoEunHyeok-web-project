@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>추천 공유 — 무뮤(MoodMusic)</title>
+    <script>
+        (function(){
+            try {
+                const t = localStorage.getItem('theme');
+                if (t) document.documentElement.setAttribute('data-theme', t);
+            } catch(e){}
+        })();
+    </script>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <a href="../index.html" class="logo" aria-label="무뮤 홈">무뮤(MoodMusic)</a>
+        <nav>
+            <ul class="nav">
+                <li><a href="../index.html">메인</a></li>
+                <li><a href="suggest.html" class="active">추천</a></li>
+                <li><a href="random.html">랜덤</a></li>
+                <li><a href="introduction.html">소개</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="suggest-form">
+            <h2>곡 추천하기</h2>
+            <form id="songForm">
+                <label>곡 제목
+                    <input type="text" id="title" required>
+                </label>
+                <label>아티스트
+                    <input type="text" id="artist" required>
+                </label>
+                <label>감정
+                    <input type="text" id="mood" placeholder="예: 기쁨, 슬픔, 평온 등">
+                </label>
+                <button type="submit">추천 공유</button>
+            </form>
+        </section>
+
+        <section class="suggest-list">
+            <h3>추천된 노래</h3>
+            <ul id="sharedList">
+                <li class="placeholder">아직 공유된 곡이 없습니다.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <small>© 무뮤 MoodMusic - 프로토타입</small>
+    </footer>
+
+    <script>
+        const form = document.getElementById('songForm');
+        const sharedList = document.getElementById('sharedList');
+
+        function loadShared() {
+            const list = JSON.parse(localStorage.getItem('sharedSongs') || '[]');
+            renderList(list);
+        }
+        function renderList(list) {
+            sharedList.innerHTML = '';
+            if (list.length === 0) {
+                sharedList.innerHTML = '<li class="placeholder">아직 공유된 곡이 없습니다.</li>';
+                return;
+            }
+            list.forEach((s) => {
+                const li = document.createElement('li');
+                li.textContent = `${s.title} — ${s.artist} ${s.mood ? '('+s.mood+')' : ''}`;
+                sharedList.appendChild(li);
+            });
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = document.getElementById('title').value.trim();
+            const artist = document.getElementById('artist').value.trim();
+            const mood = document.getElementById('mood').value.trim();
+            if (!title || !artist) return;
+            const list = JSON.parse(localStorage.getItem('sharedSongs') || '[]');
+            list.unshift({title, artist, mood});
+            localStorage.setItem('sharedSongs', JSON.stringify(list));
+            form.reset();
+            renderList(list);
+        });
+
+        loadShared();
+    </script>
+</body>
+</html>

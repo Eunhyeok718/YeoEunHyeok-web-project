@@ -3,17 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <title>무뮤(MoodMusic)</title>
+    <!-- 페이지가 렌더되기 전에 저장된 테마를 적용해 플래시 최소화 -->
+    <script>
+        (function(){
+            try {
+                const t = localStorage.getItem('theme');
+                if (t) document.documentElement.setAttribute('data-theme', t);
+            } catch(e){}
+        })();
+    </script>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <header>
-        <h1>무뮤(MoodMusic)</h1>
+    <header class="site-header">
+        <a href="index.html" class="logo" aria-label="무뮤 홈">무뮤(MoodMusic)</a>
         <nav>
-            <ul>
-                <li><a href="suggest.html">추천</a></li>
-                <li><a href="random.html">랜덤</a></li>
-                <li><a href="introduction.html">소개</a></li>
+            <ul class="nav">
+                <li><a href="index.html" class="active">메인</a></li>
+                <li><a href="pages/suggest.html">추천</a></li>
+                <li><a href="pages/random.html">랜덤</a></li>
+                <li><a href="pages/introduction.html">소개</a></li>
             </ul>
         </nav>
     </header>
+
+    <main class="container">
+        <section class="mood-section">
+            <h2 class="sr">감정 선택</h2>
+            <div class="mood-grid" id="moodGrid">
+                <button data-mood="happy">기쁨</button>
+                <button data-mood="sad">슬픔</button>
+                <button data-mood="calm">평온</button>
+                <button data-mood="angry">분노</button>
+            </div>
+        </section>
+
+        <section class="recommend-section">
+            <h3>추천곡</h3>
+            <ul id="recommendList" class="recommend-list">
+                <li class="placeholder">감정을 선택하면 추천곡이 표시됩니다.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <small>© 무뮤 MoodMusic - 프로토타입</small>
+    </footer>
+
+    <script>
+        // 감정별 곡 데이터 (간단 예시)
+        const catalog = {
+            happy: [
+                {title: 'Sunshine Melody', artist: 'A. Artist'},
+                {title: 'Happy Day', artist: 'B. Band'}
+            ],
+            sad: [
+                {title: 'Blue Rain', artist: 'E. Echo'},
+                {title: 'Cold Coffee', artist: 'F. Flow'}
+            ],
+            calm: [
+                {title: 'Quiet Night', artist: 'C. Composer'},
+                {title: 'Breathe', artist: 'D. Dream'}
+            ],
+            angry: [
+                {title: 'Run Wild', artist: 'G. Groove'},
+                {title: 'High Voltage', artist: 'H. Heat'}
+            ]
+        };
+
+        const moodGrid = document.getElementById('moodGrid');
+        const recommendList = document.getElementById('recommendList');
+
+        // 적용된 테마 불러오기 (브라우저 localStorage에 저장)
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            const btn = document.querySelector(`.mood-grid button[data-mood="${savedTheme}"]`);
+            if (btn) btn.classList.add('selected');
+            const songs = catalog[savedTheme] || [];
+            renderRecommendations(songs);
+        }
+
+        moodGrid.addEventListener('click', (e) => {
+            const btn = e.target.closest('button[data-mood]');
+            if (!btn) return;
+            document.querySelectorAll('.mood-grid button').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+
+            const mood = btn.dataset.mood;
+            // 테마 적용 및 저장
+            document.documentElement.setAttribute('data-theme', mood);
+            localStorage.setItem('theme', mood);
+
+            const songs = catalog[mood] || [];
+            renderRecommendations(songs);
+        });
+
+        function renderRecommendations(songs) {
+            recommendList.innerHTML = '';
+            if (songs.length === 0) {
+                recommendList.innerHTML = '<li class="placeholder">추천곡이 없습니다.</li>';
+                return;
+            }
+            songs.forEach(s => {
+                const li = document.createElement('li');
+                li.className = 'song-item';
+                li.textContent = `${s.title} — ${s.artist}`;
+                recommendList.appendChild(li);
+            });
+            recommendList.scrollIntoView({behavior: 'smooth', block: 'center'});
+        }
+    </script>
 </body>
 </html>

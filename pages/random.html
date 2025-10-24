@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>랜덤 추천 — 무뮤(MoodMusic)</title>
+    <script>
+        (function(){
+            try {
+                const t = localStorage.getItem('theme');
+                if (t) document.documentElement.setAttribute('data-theme', t);
+            } catch(e){}
+        })();
+    </script>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+    <header class="site-header">
+        <a href="../index.html" class="logo" aria-label="무뮤 홈">무뮤(MoodMusic)</a>
+        <nav>
+            <ul class="nav">
+                <li><a href="../index.html">메인</a></li>
+                <li><a href="suggest.html">추천</a></li>
+                <li><a href="random.html" class="active">랜덤</a></li>
+                <li><a href="introduction.html">소개</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container center-content">
+        <section class="random-card" id="randomCard">
+            <h2>랜덤 추천</h2>
+            <p id="randomSong" class="random-song">버튼을 눌러 랜덤으로 곡을 추천받으세요.</p>
+            <button id="randomBtn">랜덤 추천 받기</button>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <small>© 무뮤 MoodMusic - 프로토타입</small>
+    </footer>
+
+    <script>
+        const pool = [
+            {title: 'Sunshine Melody', artist: 'A. Artist'},
+            {title: 'Quiet Night', artist: 'C. Composer'},
+            {title: 'Run Wild', artist: 'G. Groove'},
+            {title: 'Blue Rain', artist: 'E. Echo'},
+            {title: 'Close to You', artist: 'I. Intone'},
+            {title: 'Old Days', artist: 'K. Keepsake'}
+        ];
+
+        const btn = document.getElementById('randomBtn');
+        const display = document.getElementById('randomSong');
+
+        btn.addEventListener('click', () => {
+            const pick = pool[Math.floor(Math.random()*pool.length)];
+            display.textContent = `${pick.title} — ${pick.artist}`;
+            display.classList.add('reveal');
+        });
+    </script>
+</body>
+</html>
