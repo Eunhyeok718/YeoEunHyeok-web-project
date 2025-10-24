@@ -6,4 +6,3 @@
 ## 3. 사용 기술
 html, css, javascript(예정) 사용
 ## 4. 실행 방법
-[사이트 주소](https://eunhyeok718.github.io/YeoEunHyeok-web-project/)
